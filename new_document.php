@@ -1,7 +1,7 @@
 <div class="col-lg-12">
 	<div class="card card-outline card-primary">
 		<div class="card-body">
-			<form action="" id="manage-upload">
+			<form action="" id="manage-files">
 
         <input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 				<div class="row">
@@ -118,7 +118,7 @@
     	</div>
     	<div class="card-footer border-top border-info">
     		<div class="d-flex w-100 justify-content-center align-items-center">
-    			<button class="btn btn-flat  bg-gradient-primary mx-2" form="manage-upload">Save</button>
+    			<button class="btn btn-flat  bg-gradient-primary mx-2" form="manage-files">Save</button>
     			<button class="btn btn-flat bg-gradient-secondary mx-2" type="button">Cancel</button>
     		</div>
     	</div>
@@ -236,4 +236,45 @@ $(function () {
 			}
 		})
 	})
+</script>
+<script>
+	$('#manage-files').submit(function(e){
+			e.preventDefault()
+			start_load();
+		$('#msg').html('')
+		$.ajax({
+			url:'ajax.php?action=save_files',
+			data: new FormData($(this)[0]),
+		    cache: false,
+		    contentType: false,
+		    processData: false,
+		    method: 'POST',
+		    type: 'POST',
+			success:function(resp){
+				if(typeof resp != undefined){
+					resp = JSON.parse(resp);
+					if(resp.status == 1){
+						alert_toast("New File successfully added.",'success')
+						setTimeout(function(){
+							location.reload()
+						},1500)
+					}else{
+						$('#msg').html('<div class="alert alert-danger">'+resp.msg+'</div>')
+						end_load()
+					}
+				}
+			}
+		})
+	})
+	function displaytitle(input,_this) {
+			    if (input.files && input.files[0]) {
+			        var reader = new FileReader();
+			        reader.onload = function (e) {
+            			_this.siblings('label').html(input.files[0]['title'])
+			            
+			        }
+
+			        reader.readAsDataURL(input.files[0]);
+			    }
+			}
 </script>

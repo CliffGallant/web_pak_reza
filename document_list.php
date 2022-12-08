@@ -46,14 +46,14 @@
 					$i = 1;
 					$where = '';
 					if($_SESSION['login_type'] == 1 ):
-					$user = $conn->query("SELECT * FROM users where id in (SELECT user_id FROM documents) ");
+					$user = $conn->query("SELECT * FROM users where id in (SELECT user_id FROM files) ");
 					while($row = $user->fetch_assoc()){
 						$uname[$row['id']] = ucwords($row['lastname'].', '.$row['firstname'].' '.$row['middlename']);
 					}
 					else:
 						$where = " where user_id = '{$_SESSION['login_id']}' ";
 					endif;
-					$qry = $conn->query("SELECT * FROM documents $where order by unix_timestamp(date_created) desc ");
+					$qry = $conn->query("SELECT * FROM files $where order by unix_timestamp(date_updated) desc ");
 					while($row= $qry->fetch_assoc()):
 						$trans = get_html_translation_table(HTML_ENTITIES,ENT_QUOTES);
 						unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);

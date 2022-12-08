@@ -11,11 +11,11 @@ $qry = $conn->query("SELECT * FROM files where id=".$_GET['id']);
 ?>
 <div class="container-fluid">
 	<form action="" id="manage-files">
-		<input type="hidden" name="id" value="<?php echo isset($_GET['id']) ? $_GET['id'] :'' ?>">
-		<input type="hidden" name="folder_id" value="<?php echo isset($_GET['fid']) ? $_GET['fid'] :'' ?>">
+		<input type="hidden" title="id" value="<?php echo isset($_GET['id']) ? $_GET['id'] :'' ?>">
+		<input type="hidden" title="folder_id" value="<?php echo isset($_GET['fid']) ? $_GET['fid'] :'' ?>">
 		<!-- <div class="form-group">
-			<label for="name" class="control-label">File Name</label>
-			<input type="text" name="name" id="name" value="<?php echo isset($meta['name']) ? $meta['name'] :'' ?>" class="form-control">
+			<label for="title" class="control-label">File title</label>
+			<input type="text" title="title" id="title" value="<?php echo isset($meta['title']) ? $meta['title'] :'' ?>" class="form-control">
 		</div> -->
 		<?php if(!isset($_GET['id']) || empty($_GET['id'])): ?>
 		<div class="input-group mb-3">
@@ -23,25 +23,24 @@ $qry = $conn->query("SELECT * FROM files where id=".$_GET['id']);
 		    <span class="input-group-text">Upload</span>
 		  </div>
 		  <div class="custom-file">
-		    <input type="file" class="custom-file-input" name="upload" id="upload" onchange="displayname(this,$(this))">
+		    <input type="file" class="custom-file-input" title="upload" id="upload" onchange="displaytitle(this,$(this))">
 		    <label class="custom-file-label" for="upload">Choose file</label>
 		  </div>
 		</div>
 	<?php endif; ?>
 		<div class="form-group">
 			<label for="" class="control-label">Description</label>
-			<textarea name="description" id="" cols="30" rows="10" class="form-control"><?php echo isset($meta['description']) ? $meta['description'] :'' ?></textarea>
+			<textarea title="description" id="" cols="30" rows="10" class="form-control"><?php echo isset($meta['description']) ? $meta['description'] :'' ?></textarea>
 		</div>
 		<div class="form-group">
-			<label for="is_public" class="control-label"><input type="checkbox" name="is_public" id="is_public"><i> Share to All Users</i></label>
+			<label for="is_public" class="control-label"><input type="checkbox" title="is_public" id="is_public"><i> Share to All Users</i></label>
 		</div>
 		<div class="form-group" id="msg"></div>
 
 	</form>
 </div>
 <script>
-	$(document).ready(function(){
-		$('#manage-files').submit(function(e){
+	$('#manage-files').submit(function(e){
 			e.preventDefault()
 			start_load();
 		$('#msg').html('')
@@ -68,13 +67,12 @@ $qry = $conn->query("SELECT * FROM files where id=".$_GET['id']);
 				}
 			}
 		})
-		})
 	})
-	function displayname(input,_this) {
+	function displaytitle(input,_this) {
 			    if (input.files && input.files[0]) {
 			        var reader = new FileReader();
 			        reader.onload = function (e) {
-            			_this.siblings('label').html(input.files[0]['name'])
+            			_this.siblings('label').html(input.files[0]['title'])
 			            
 			        }
 

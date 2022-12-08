@@ -1,10 +1,10 @@
 <?php 
 include 'db_connect.php';
 $folder_parent = isset($_GET['fid'])? $_GET['fid'] : 0;
-$folders = $conn->query("SELECT * FROM folders where parent_id = $folder_parent and user_id = '".$_SESSION['login_id']."'  order by name asc");
+$folders = $conn->query("SELECT * FROM folders where parent_id = $folder_parent and user_id = '".$_SESSION['login_id']."'  order by title asc");
 
 
-$files = $conn->query("SELECT * FROM files where folder_id = $folder_parent and user_id = '".$_SESSION['login_id']."'  order by name asc");
+$files = $conn->query("SELECT * FROM files where folder_id = $folder_parent and user_id = '".$_SESSION['login_id']."'  order by title asc");
 
 ?>
 <style>
@@ -58,9 +58,9 @@ a.custom-menu-list span.icon{
 				$id=$folder_parent;
 				while($id > 0){
 
-					$path = $conn->query("SELECT * FROM folders where id = $id  order by name asc")->fetch_array();
+					$path = $conn->query("SELECT * FROM folders where id = $id  order by title asc")->fetch_array();
 					echo '<script>
-						$("#paths").prepend("<a href=\"index.php?page=files&fid='.$path['id'].'\">'.$path['name'].'</a>/")
+						$("#paths").prepend("<a href=\"index.php?page=files&fid='.$path['id'].'\">'.$path['title'].'</a>/")
 					</script>';
 					$id = $path['parent_id'];
 
@@ -100,12 +100,13 @@ a.custom-menu-list span.icon{
 			?>
 				<div class="card col-md-3 mt-2 ml-2 mr-2 mb-2 folder-item" data-id="<?php echo $row['id'] ?>">
 					<div class="card-body">
-							<large><span><i class="fa fa-folder"></i></span><b class="to_folder"> <?php echo $row['name'] ?></b></large>
+							<large><span><i class="fa fa-folder"></i></span><b class="to_folder"> <?php echo $row['title'] ?></b></large>
 					</div>
 				</div>
 			<?php endwhile; ?>
 		</div>
 		<hr>
+		<?php include 'document_list.php';?>
 		<div class="row">
 			<div class="card col-md-12">
 				<div class="card-body">
@@ -117,7 +118,7 @@ a.custom-menu-list span.icon{
 						</tr>
 						<?php 
 					while($row=$files->fetch_assoc()):
-						$name = explode(' ||',$row['name']);
+						$name = explode(' ||',$row['title']);
 						$name = isset($name[1]) ? $name[0] ." (".$name[1].").".$row['file_type'] : $name[0] .".".$row['file_type'];
 						$img_arr = array('png','jpg','jpeg','gif','psd','tif');
 						$doc_arr =array('doc','docx');

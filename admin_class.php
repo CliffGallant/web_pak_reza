@@ -57,7 +57,7 @@ Class Action {
 			exit;
 		}
 		if($_FILES['img']['tmp_name'] != ''){
-			$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
+			$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['title'];
 			$move = move_uploaded_file($_FILES['img']['tmp_name'],'assets/uploads/'. $fname);
 			$data .= ", avatar = '$fname' ";
 
@@ -87,7 +87,7 @@ Class Action {
 			}
 		}
 		if($_FILES['img']['tmp_name'] != ''){
-			$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
+			$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['title'];
 			$move = move_uploaded_file($_FILES['img']['tmp_name'],'assets/uploads/'. $fname);
 			$data .= ", avatar = '$fname' ";
 
@@ -131,12 +131,12 @@ Class Action {
 			return json_encode(array("status"=>1,"fname"=>$fname));
 		}
 	}
-	function remove_file(){
-		extract($_POST);
-		if(is_file('assets/uploads/'.$fname))
-			unlink('assets/uploads/'.$fname);
-		return 1;
-	}
+	// function remove_file(){
+	// 	extract($_POST);
+	// 	if(is_file('assets/uploads/'.$fname))
+	// 		unlink('assets/uploads/'.$fname);
+	// 	return 1;
+	// }
 	// function delete_file(){
 	// 	extract($_POST);
 	// 	$doc = $this->db->query("SELECT * FROM documents where id= $id")->fetch_array();
@@ -223,9 +223,9 @@ Class Action {
 		$data .= ", user_id ='{$_SESSION['login_id']}' ";
 		$data .= ", file_json ='".json_encode($fname)."' ";
 		if(empty($id)){
-			$save = $this->db->query("INSERT INTO documents set $data ");
+			$save = $this->db->query("INSERT INTO files set $data ");
 		}else{
-			$save = $this->db->query("UPDATE documents set $data where id = $id");
+			$save = $this->db->query("UPDATE files set $data where id = $id");
 		}
 		if($save){
 			return 1;
@@ -363,34 +363,34 @@ Class Action {
 	}
 
 	function save_files(){
+		
 		extract($_POST);
 		if(empty($id)){
 		if($_FILES['upload']['tmp_name'] != ''){
-					$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['upload']['name'];
+					$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['upload']['title'];
 					$move = move_uploaded_file($_FILES['upload']['tmp_name'],'assets/uploads/'. $fname);
 		
 					if($move){
-						$file = $_FILES['upload']['name'];
+						$file = $_FILES['upload']['title'];
 						$file = explode('.',$file);
 						$chk = $this->db->query("SELECT * FROM files where SUBSTRING_INDEX(name,' ||',1) = '".$file[0]."' and folder_id = '".$folder_id."' and file_type='".$file[1]."' ");
 						if($chk->num_rows > 0){
 							$file[0] = $file[0] .' ||'.($chk->num_rows);
 						}
-						$data = " name = '".$file[0]."' ";
+						$data = " title = '".$file[0]."' ";
 						$data .= ", folder_id = '".$folder_id."' ";
 						$data .= ", description = '".$description."' ";
 						$data .= ", user_id = '".$_SESSION['login_id']."' ";
 						$data .= ", file_type = '".$file[1]."' ";
 						$data .= ", file_path = '".$fname."' ";
-						if(isset($is_public) && $is_public == 'on')
-						$data .= ", is_public = 1 ";
-						else
-						$data .= ", is_public = 0 ";
-
-						$save = $this->db->query("INSERT INTO files set ".$data);
-						if($save)
-						return json_encode(array('status'=>1));
-		
+						if(empty($id)){
+							$save = $this->db->query("INSERT INTO rldc set $data ");
+						}else{
+							$save = $this->db->query("UPDATE rldc set $data where id = $id");
+						}
+						if($save){
+							return 1;
+						}
 					}
 		
 				}
